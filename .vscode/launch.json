@@ -5,10 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
+            "name": "trends",
             "type": "python",
             "request": "launch",
             "program": "trends.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "benchmark",
+            "type": "python",
+            "request": "launch",
+            "program": "benchmark.py",
             "console": "integratedTerminal"
         }
     ]
