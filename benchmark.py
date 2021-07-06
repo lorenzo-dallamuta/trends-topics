@@ -25,7 +25,7 @@ successes = []
 failures = []
 for i in range(len(keys)):
     wait = randint(30, 60)
-    # sleep(wait)
+    sleep(wait)
     start = datetime.now()
     res = list_topics(key=keys[i], options=opts)
     if isinstance(res, list):
