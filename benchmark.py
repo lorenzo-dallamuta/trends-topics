@@ -5,6 +5,9 @@ from selenium import webdriver
 from trends import list_topics
 from datetime import datetime
 
+import concurrent.futures
+import threading
+
 opts = webdriver.FirefoxOptions()
 opts.add_argument('--headless')
 
@@ -19,16 +22,29 @@ Earlier dethroned by Apple in 2010, in 2018 Microsoft reclaimed its position as 
 stripped_text = re.sub('[^A-Za-z0-9]+', ' ', text)
 
 keys = stripped_text.split()
+groupby = 2
+keys = [[keys[i] for i in range(sub[0], sub[1])] for sub in zip(
+    range(0, len(keys), groupby), range(groupby, len(keys), groupby))]
 
 times = []
 successes = []
 failures = []
-for i in range(len(keys)):
+for i in range(2):
     wait = randint(30, 60)
-    sleep(wait)
+    # sleep(wait)
     start = datetime.now()
-    res = list_topics(key=keys[i], options=opts)
-    if isinstance(res, list):
+    # res = list_topics(key=keys[i], options=opts)
+    all_topics = []
+    # with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+    #     executor.map(lambda key: list_topics(
+    #         all_topics, key, 'IT', True), keys[i])
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
+    executor.map(lambda key: list_topics(
+        all_topics, key, 'IT', True), keys[i])
+    executor.shutdown(wait=True)
+
+    # if isinstance(res, list):
+    if len(all_topics) > 0:
         end = datetime.now()
         time = end - start
         times.append((time).seconds * (10 ** 6) + (time).microseconds)
@@ -39,3 +55,6 @@ for i in range(len(keys)):
     with open('benchmark.txt', 'w') as f:
         f.write(
             f'successes running time:\n{times}\nsuccess rate:\n{(i + 1 - len(failures)) / (i + 1)}\nsuccessful wait times:\n{successes}\nfailing wait times:\n{failures}')
+
+with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+    executor.map(list_topics, keys)
