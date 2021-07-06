@@ -9,14 +9,16 @@
             "type": "python",
             "request": "launch",
             "program": "trends.py",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "justMyCode": false
         },
         {
             "name": "benchmark",
             "type": "python",
             "request": "launch",
             "program": "benchmark.py",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "justMyCode": false
         }
     ]
 }

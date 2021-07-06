@@ -9,5 +9,9 @@ benchmark*.txt
 !.vscode/settings.json
 
 __pycache__/*
+*.pyc
+*.pyo
 
 *.log
+
+proxytest.py
