@@ -1,9 +1,14 @@
-from copy import Error
 import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
+
+import logging
+from datetime import datetime
+date = datetime.now()
+logging.basicConfig(filename=f'{date}.log',
+                    format='%(asctime)s.%(msecs)03d %(levelname)s: %(message)s in [%(module)s:%(funcName)s:%(lineno)d]', datefmt='%Y-%m-%d,%H:%M:%S', encoding='utf-8', level=logging.INFO)
 
 
 def list_topics(key='', geo='IT', top=False, options=webdriver.FirefoxOptions()):
@@ -37,12 +42,20 @@ def list_topics(key='', geo='IT', top=False, options=webdriver.FirefoxOptions())
                     'arrow-right-active')
             return topics
 
-        except IndexError as e:
+        except AssertionError as e:
             print(
                 f'the query for {key} was timed out by the source')
+            logging.exception(repr(e), exc_info=True)
+            return None
+        except IndexError as e:
+            print(
+                f'the query for {key} couldn\'t find the target element')
+            logging.error(repr(e), exc_info=True)
             return None
         except Exception as e:
-            print(e)
+            print(
+                f'the query for {key} failed for an unknown reason')
+            logging.error(repr(e), exc_info=True)
             return None
 
 

@@ -18,20 +18,24 @@ Steve Ballmer replaced Gates as CEO in 2000, and later envisioned a "devices and
 Earlier dethroned by Apple in 2010, in 2018 Microsoft reclaimed its position as the most valuable publicly traded company in the world.[13] In April 2019, Microsoft reached the trillion-dollar market cap, becoming the third U.S. public company to be valued at over $1 trillion after Apple and Amazon respectively.[14] As of 2020, Microsoft has the third-highest global brand valuation.[15] """
 stripped_text = re.sub('[^A-Za-z0-9]+', ' ', text)
 
-# keys = [word for word in stripped_text]
 keys = stripped_text.split()
 
 times = []
-failures = 0
+successes = []
+failures = []
 for i in range(len(keys)):
+    wait = randint(30, 60)
+    # sleep(wait)
     start = datetime.now()
-    if list_topics(key=keys[i], options=opts):
+    res = list_topics(key=keys[i], options=opts)
+    if isinstance(res, list):
         end = datetime.now()
         time = end - start
         times.append((time).seconds * (10 ** 6) + (time).microseconds)
+        successes.append(wait)
         print(time, start, end)
     else:
-        failures += 1
+        failures.append((i, keys[i], wait))
     with open('benchmark.txt', 'w') as f:
-        f.write(f'\n{times}\nsuccess rate: {(i + 1 - failures) / (i + 1)}')
-    sleep(randint(30, 60))
+        f.write(
+            f'successes running time:\n{times}\nsuccess rate:\n{(i + 1 - len(failures)) / (i + 1)}\nsuccessful wait times:\n{successes}\nfailing wait times:\n{failures}')
