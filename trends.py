@@ -19,7 +19,7 @@ logging.basicConfig(filename=f'logs/{date.strftime("%m-%d-%Y_%H-%M-%S")}.log',
 topics_lock = threading.Lock()
 
 
-def list_topics(res, key='', geo='IT', full=False, options=webdriver.FirefoxOptions()):
+def list_topics(res, key='', geo='IT', full=False, options=webdriver.FirefoxOptions(), lock=topics_lock):
     try:
         with webdriver.Firefox(options=options) as driver:
             try:
@@ -52,6 +52,9 @@ def list_topics(res, key='', geo='IT', full=False, options=webdriver.FirefoxOpti
                     all_topics = res
                     all_topics.extend(topics)
                     res = all_topics
+                    print(f'the query for {key} was successful')
+                    logging.info(
+                        f'the query for {key} was successful')
 
             except AssertionError as e:
                 print(
